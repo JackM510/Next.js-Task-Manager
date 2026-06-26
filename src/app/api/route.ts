@@ -1,5 +1,6 @@
 import clientPromise from "@/lib/mongodb";
 
+// Get all tasks
 export async function GET() {
     const client = await clientPromise; // Wait for MongoDB to finish connecting
     const db = client.db(process.env.MONGODB_DB); // Select the DB from .env-local
@@ -7,6 +8,7 @@ export async function GET() {
     return Response.json(tasks, { status: 200 }); // Return tasks as JSON with 200 OK status
 }
 
+// Insert new task
 export async function POST(req: Request) {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);

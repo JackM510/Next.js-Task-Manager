@@ -19,7 +19,7 @@ export default function TaskList({ tasks }: taskListProps ) {
                     Task Manager
                 </h1>
                 <PlusIcon 
-                    className="h-5 w-5 text-black"
+                    className="h-5 w-5 text-black hover:opacity-80 hover:scale-125"
                     onClick={() => setIsAdding(true)}
                 />
             </div>
@@ -30,22 +30,21 @@ export default function TaskList({ tasks }: taskListProps ) {
                     <Task
                         task={{
                             _id: "new-task",
-                            title:"Enter a task",
                             completed: false,
-                            priority: "low"
                         }}
                         isNew={true}
+                        onFinishAdd={() => setIsAdding(false)}
                     />
                 )}
 
 
 
-                {/* Existing Tasks */}
+                {/* All Tasks */}
                 {tasks.map((task) => (
                     < Task
                         key={task._id}
                         task={task}
-
+                        
                     />
                 )
 

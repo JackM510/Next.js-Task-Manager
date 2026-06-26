@@ -1,58 +1,81 @@
 "use client"; // Run in the browser
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { TaskType } from "../types/task"
-import { CheckIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, CheckIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 type TaskProps = {
     task: TaskType;
     isNew?: boolean;
-    /*onToggle: (id: string) => void;
-    onEdit: (id: string) => void;
-    onDelete: (id: string) => void;*/
+    onFinishAdd?: () => void;
 }
 
-export default function Task({ task, isNew }: TaskProps) {
+export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
 
     const router = useRouter();
     const [isEditing, setIsEditing] = useState(isNew || false);
-    const [draftTitle, setDraftTitle] = useState(task.title);
+    const [draftTitle, setDraftTitle] = useState(task.title ?? "");
     const priorityClasses = {
         high: "bg-red-500 text-white",
         medium: "bg-orange-500 text-white",
-        low: "bg-yellow-500 text-white"
+        low: "bg-yellow-500 text-white",
+        none: "bg-gray-300 text-white"
     }
 
-    // Create new task
+    const taskContainer = useRef<HTMLDivElement>(null); // task container ref
+
+    useEffect(() => {
+        function handleClickOutside(e: MouseEvent) {
+            if (isEditing && taskContainer.current && !taskContainer.current.contains(e.target as Node)) {
+                setIsEditing(false); // stop editing
+                onFinishAdd?.(); // stop adding
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [isEditing]);
+
+    /* ----- Create task ----- */
     async function handleCreate() {
         const res = await fetch("/api", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 title: draftTitle,
-                completed: false,
-                priority: null
+                completed: false
             })
         });
         if (!res.ok) console.error("Failed to create task");
-        isNew = false;
         router.refresh(); // Refresh task list after saving
+        onFinishAdd?.();   // Call the passed function
     }
 
-    // Update existing task
+    /* ----- Update task ----- */
     async function handleUpdate() {
-        const res = await fetch (`/api/$task._id}`, {
+        const res = await fetch(`/api/tasks/${task._id}`, {
             method: "PATCH",
-            headers: {"Content-Type": "applicaiton/JSON"},
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify({ title: draftTitle })
         });
         if (!res.ok) console.error("Failed to update task");
-        setIsEditing(false);
         router.refresh(); // Refresh task list after saving
+        setIsEditing(false);
+    }
+
+    /* ----- Delete task ----- */
+    async function handleDelete() {
+        const res = await fetch(`/api/tasks/${task._id}`, {
+            method: "DELETE",
+        });
+        if (!res.ok) console.error("Failed to delete task");
+        router.refresh();
     }
 
     return (
-        <div className="flex justify-between p-4 bg-gray-100 border rounded mb-2">
+        <div 
+            ref={taskContainer}
+            className="flex justify-between p-4 bg-gray-100 border rounded mb-2"
+        >
             {/* Left side: checkbox + text column */}
             <div className="flex flex-1 items-baseline">
                 {/* Checkbox */}
@@ -60,7 +83,6 @@ export default function Task({ task, isNew }: TaskProps) {
                     type="checkbox"
                     className="mr-4"
                     checked={task.completed}
-                    onChange={() => alert(":)")}
                 />
 
                 {/* Title + priority */}
@@ -69,15 +91,8 @@ export default function Task({ task, isNew }: TaskProps) {
                     <input
                         value={draftTitle}
                         placeholder="Enter a task"
-                        autoFocus={isNew}
+                        autoFocus={isEditing}
                         onChange={(e) => setDraftTitle(e.target.value)}
-                        onBlur={() => {
-                            if (!isNew) {
-                                setIsEditing(false);
-                                setDraftTitle(task.title);
-                            }
-                            }}
-
                         className="
                             text-lg leading-6 text-gray-700
                             border-b border-gray-300
@@ -94,9 +109,14 @@ export default function Task({ task, isNew }: TaskProps) {
                     )}
 
                     <span
-                        className={`text-xs font-semibold uppercase mt-2 px-2 py-1 rounded-full w-fit hover:opacity-80 ${priorityClasses[task.priority]}`}
+                        className={`text-xs font-semibold uppercase mt-2 px-2 py-1 rounded-full w-fit hover:opacity-80 ${ task.priority ? priorityClasses[task.priority] : priorityClasses["none"]}`}
                     >
-                        {task.priority}
+                        {task.priority ?? 
+                            <PlusIcon 
+                                className="h-3 w-3 text-black" 
+                                onClick={() => alert("hello")}
+                            />
+                        }
                     </span>
                 </div>
             </div>
@@ -110,6 +130,7 @@ export default function Task({ task, isNew }: TaskProps) {
                 ) : (
                     <TrashIcon 
                         className="h-5 w-5 text-gray-700 hover:opacity-80"
+                        onClick={() => handleDelete()}
                     />
                 )}
             </div>

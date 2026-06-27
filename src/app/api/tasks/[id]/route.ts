@@ -13,11 +13,11 @@ export async function PATCH(req: Request, context: RouteContext ) {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
 
-    const { title } = await req.json();
+    const { title, priority } = await req.json();
 
     const result = await db.collection("tasks").updateOne(
         { _id: new ObjectId(id) },
-        { $set: { title } }
+        { $set: { title, priority } }
     );
 
   return Response.json({ ok: true });

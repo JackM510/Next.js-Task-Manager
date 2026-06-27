@@ -15,15 +15,17 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
     const router = useRouter();
     const [isEditing, setIsEditing] = useState(isNew || false);
     const [draftTitle, setDraftTitle] = useState(task.title ?? "");
-    const priorityClasses = {
-        high: "bg-red-500 text-white",
-        medium: "bg-orange-500 text-white",
+    const [addPriority, setAddPriority] = useState(false);
+    const [draftPriority, setDraftPriority] = useState<string | null>(task.priority ?? null);
+    const priorityClasses: Record<string, string> = {
+        none: "bg-gray-300 text-white",
         low: "bg-yellow-500 text-white",
-        none: "bg-gray-300 text-white"
+        medium: "bg-orange-500 text-white",
+        high: "bg-red-500 text-white"
     }
 
+    // Task container outside click event
     const taskContainer = useRef<HTMLDivElement>(null); // task container ref
-
     useEffect(() => {
         function handleClickOutside(e: MouseEvent) {
             if (isEditing && taskContainer.current && !taskContainer.current.contains(e.target as Node)) {
@@ -37,11 +39,13 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
 
     /* ----- Create task ----- */
     async function handleCreate() {
+        if (!draftTitle.trim()) return;
         const res = await fetch("/api", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 title: draftTitle,
+                priority: draftPriority,
                 completed: false
             })
         });
@@ -51,11 +55,15 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
     }
 
     /* ----- Update task ----- */
-    async function handleUpdate() {
+    async function handleUpdate(newPriority?: string) {
+        if (!draftTitle.trim()) return;
         const res = await fetch(`/api/tasks/${task._id}`, {
             method: "PATCH",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ title: draftTitle })
+            body: JSON.stringify({ 
+                title: draftTitle,
+                priority: newPriority ?? draftPriority
+            })
         });
         if (!res.ok) console.error("Failed to update task");
         router.refresh(); // Refresh task list after saving
@@ -82,7 +90,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                 <input
                     type="checkbox"
                     className="mr-4"
-                    checked={task.completed}
+                    onChange={() => alert("Add check function")}
                 />
 
                 {/* Title + priority */}
@@ -93,6 +101,11 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                         placeholder="Enter a task"
                         autoFocus={isEditing}
                         onChange={(e) => setDraftTitle(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                isNew ? handleCreate() : handleUpdate();
+                            }
+                        }}
                         className="
                             text-lg leading-6 text-gray-700
                             border-b border-gray-300
@@ -108,28 +121,48 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                     </span>
                     )}
 
-                    <span
-                        className={`text-xs font-semibold uppercase mt-2 px-2 py-1 rounded-full w-fit hover:opacity-80 ${ task.priority ? priorityClasses[task.priority] : priorityClasses["none"]}`}
-                    >
-                        {task.priority ?? 
-                            <PlusIcon 
-                                className="h-3 w-3 text-black" 
-                                onClick={() => alert("hello")}
-                            />
-                        }
-                    </span>
+                    {/* Add/Update Task Priority */}
+                    {addPriority ? (
+                        <div className="mt-2">
+                            {Object.keys(priorityClasses)
+                                .filter(key => key !== "none")
+                                .map(priority => (
+                                <span
+                                    key={priority}
+                                    className={`text-xs font-semibold uppercase mr-1 px-2 py-1 rounded-full w-fit hover:opacity-80 ${priorityClasses[priority]}`}
+                                    onClick={() => {
+                                        if (!isNew) {
+                                            handleUpdate(priority); 
+                                        } 
+                                        setDraftPriority(priority);
+                                        setAddPriority(false); // hide add priority UI
+                                    }}
+                                >
+                                    {priority}
+                                </span>
+                                ))}
+                        </div>
+                    ) : (
+                        <span
+                        className={`text-xs font-semibold uppercase mt-2 px-2 py-1 rounded-full w-fit hover:opacity-80 
+                            ${ draftPriority ? priorityClasses[draftPriority] : task.priority ? priorityClasses[task.priority] : priorityClasses["none"]}`}
+                        onClick={() => setAddPriority(true)}
+                        >
+                            { draftPriority ? draftPriority : task.priority ?? <PlusIcon className="h-4 w-4 text-white"/> }
+                        </span>)
+                    }
                 </div>
             </div>
             {/* Right side: delete button */}
             <div className="flex items-baseline ml-4">
                 {isNew || isEditing ? (
                     <CheckIcon 
-                        className="h-5 w-5 text-green-500 hover:opacity-80"
+                        className="h-5 w-5 text-green-500 hover:scale-110 hover:opacity-80"
                         onClick={() => isNew ? handleCreate() : handleUpdate() }
                     />
                 ) : (
                     <TrashIcon 
-                        className="h-5 w-5 text-gray-700 hover:opacity-80"
+                        className="h-5 w-5 text-gray-700 hover:scale-110 hover:opacity-80"
                         onClick={() => handleDelete()}
                     />
                 )}

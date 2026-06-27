@@ -68,7 +68,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({ 
                 title: draftTitle,
-                priority: newPriority ?? draftPriority,
+                priority: newPriority !==undefined ? newPriority : draftPriority,
                 completed: isCompleted ?? false
             })
         });
@@ -89,7 +89,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
     return (
         <div 
             ref={taskContainer}
-            className={`flex justify-between p-4 bg-gray-100 border rounded mb-2 ${ task.completed ? "pointer-events-none opacity-75" : ""}`}
+            className={`flex justify-between p-4 bg-gray-100 border rounded mb-2 ${ task.completed ? "opacity-50" : ""}`}
         >
             {/* Left side: checkbox + text column */}
             <div className="flex flex-1 items-baseline">
@@ -99,7 +99,8 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                     className="mr-4"
                     checked={task.completed}
                     onChange={() => {
-                        handleUpdate({isCompleted: !task.completed}); // update completed to true
+                        setDraftPriority(null);
+                        handleUpdate({newPriority: null, isCompleted: !task.completed}); // update completed to true
                     }}
                 />
 
@@ -124,7 +125,9 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                     ) : (
                     <span
                         className={`text-lg leading-6 text-black cursor-pointer pb-[1px]  ${ task.completed ? "line-through" : ""}`}
-                        onClick={() => setIsEditing(true)}
+                        onClick={() => {
+                            if (!task.completed) setIsEditing(true);
+                        }}
                     >
                         {task.title}
                     </span>
@@ -149,9 +152,9 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                                 >
                                     {priority}
                                 </span>
-                                ))}
+                            ))}
                         </div>
-                    ) : (
+                    ) : ( !task.completed && (
                         <span
                         className={`text-xs font-semibold uppercase mt-2 px-2 py-1 rounded-full w-fit hover:opacity-80 
                             ${ draftPriority ? priorityClasses[draftPriority] : task.priority ? priorityClasses[task.priority] : priorityClasses["none"]}`}
@@ -159,7 +162,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                         >
                             { draftPriority ? `Priority: ${draftPriority}`  : task.priority ? `Priority: ${task.priority}` : "PRIORITY" }
                         </span>)
-                    }
+                    )}
                 </div>
             </div>
             {/* Right side: delete button */}

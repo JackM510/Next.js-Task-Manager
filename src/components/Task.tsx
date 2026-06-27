@@ -35,7 +35,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
         }
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [isEditing]);
+    }, [isEditing], );
 
     /* ----- Create task ----- */
     async function handleCreate() {
@@ -55,14 +55,21 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
     }
 
     /* ----- Update task ----- */
-    async function handleUpdate(newPriority?: string) {
+    async function handleUpdate({
+        newPriority,
+        isCompleted
+    }: {
+        newPriority?: string | null;
+        isCompleted?: boolean;
+    } = {}) {
         if (!draftTitle.trim()) return;
         const res = await fetch(`/api/tasks/${task._id}`, {
             method: "PATCH",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({ 
                 title: draftTitle,
-                priority: newPriority ?? draftPriority
+                priority: newPriority ?? draftPriority,
+                completed: isCompleted ?? false
             })
         });
         if (!res.ok) console.error("Failed to update task");
@@ -82,7 +89,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
     return (
         <div 
             ref={taskContainer}
-            className="flex justify-between p-4 bg-gray-100 border rounded mb-2"
+            className={`flex justify-between p-4 bg-gray-100 border rounded mb-2 ${ task.completed ? "pointer-events-none opacity-75" : ""}`}
         >
             {/* Left side: checkbox + text column */}
             <div className="flex flex-1 items-baseline">
@@ -90,7 +97,10 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                 <input
                     type="checkbox"
                     className="mr-4"
-                    onChange={() => alert("Add check function")}
+                    checked={task.completed}
+                    onChange={() => {
+                        handleUpdate({isCompleted: !task.completed}); // update completed to true
+                    }}
                 />
 
                 {/* Title + priority */}
@@ -108,13 +118,12 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                         }}
                         className="
                             text-lg leading-6 text-gray-700
-                            border-b border-gray-300
-                            focus:outline-none transition-colors duration-300
-                        "
+                            border-b-2 border-gray-300
+                            focus:outline-none transition-colors duration-300"
                     />
                     ) : (
                     <span
-                        className="text-lg leading-6 text-black cursor-pointer pb-[1px]"
+                        className={`text-lg leading-6 text-black cursor-pointer pb-[1px]  ${ task.completed ? "line-through" : ""}`}
                         onClick={() => setIsEditing(true)}
                     >
                         {task.title}
@@ -132,7 +141,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                                     className={`text-xs font-semibold uppercase mr-1 px-2 py-1 rounded-full w-fit hover:opacity-80 ${priorityClasses[priority]}`}
                                     onClick={() => {
                                         if (!isNew) {
-                                            handleUpdate(priority); 
+                                            handleUpdate({newPriority: priority}); 
                                         } 
                                         setDraftPriority(priority);
                                         setAddPriority(false); // hide add priority UI
@@ -148,7 +157,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                             ${ draftPriority ? priorityClasses[draftPriority] : task.priority ? priorityClasses[task.priority] : priorityClasses["none"]}`}
                         onClick={() => setAddPriority(true)}
                         >
-                            { draftPriority ? draftPriority : task.priority ?? <PlusIcon className="h-4 w-4 text-white"/> }
+                            { draftPriority ? `Priority: ${draftPriority}`  : task.priority ? `Priority: ${task.priority}` : "PRIORITY" }
                         </span>)
                     }
                 </div>

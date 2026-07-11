@@ -7,20 +7,17 @@ interface RouteContext {
   };
 }
 
-// Task title update
+// Update Task
 export async function PATCH(req: Request, context: RouteContext ) {
     const { id } = await context.params;
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
-
-    const { title, priority, completed } = await req.json();
+    const { title, priority, deadline, completed } = await req.json();
     const result = await db.collection("tasks").updateOne(
         { _id: new ObjectId(id) },
-        { $set: { title, priority, completed } }
+        { $set: { title, priority, deadline, completed } }
     );
-
   return Response.json({ ok: true });
-
 }
 
 // Delete task

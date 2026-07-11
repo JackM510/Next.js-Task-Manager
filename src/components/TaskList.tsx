@@ -10,11 +10,10 @@ type taskListProps= {
 
 export default function TaskList({ tasks }: taskListProps ) {
     const [isAdding, setIsAdding] = useState(false);
-
     return (
-        <div className="w-1/2 mx-auto p-12">
-            {/* Heading */}
-            <div className="flex items-baseline justify-between border-b-3 border-gray-300 mb-4">
+        <div className="h-full lg:w-1/2 mx-auto py-12">
+            {/* ----- Task Manager header ----- */}
+            <div className="h-full flex items-baseline justify-between border-b-3 border-gray-300 mb-4">
                 <h1 className="text-4xl font-bold text-black pb-4">
                     Task Manager
                 </h1>
@@ -23,7 +22,16 @@ export default function TaskList({ tasks }: taskListProps ) {
                     onClick={() => setIsAdding(true)}
                 />
             </div>
-            {/* Tasks */}
+            {/* ----- Sort by ----- */}
+            <div className="flex">
+                <select className="text-black mb-4">
+                    <option value="" disabled hidden>Sort by</option>
+                    <option value="deadline">Deadline (soonest first)</option>
+                    <option value="priority_desc">Priority (high → low)</option>
+                    <option value="priority_asc">Priority (low → high)</option>
+                </select>
+            </div>
+            {/* ----- Tasks ----- */}
             <div>
                 {/* Add Task */}
                 {isAdding && (
@@ -36,19 +44,14 @@ export default function TaskList({ tasks }: taskListProps ) {
                         onFinishAdd={() => setIsAdding(false)}
                     />
                 )}
-
-
-
                 {/* All Tasks */}
                 {tasks.map((task) => (
                     < Task
                         key={task._id}
                         task={task}
-                        
+                        isNew={false}
                     />
-                )
-
-                )}
+                ))}
             </div>
         </div>
     );

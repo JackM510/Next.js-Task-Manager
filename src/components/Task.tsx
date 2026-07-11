@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { TaskType } from "../types/task"
 import { CheckIcon, TrashIcon} from "@heroicons/react/24/outline";
 
+import TaskPriority from "./TaskPriority"
 import TaskDeadline from "./TaskDeadline"
 
 
@@ -20,15 +21,13 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
     const [draftTitle, setDraftTitle] = useState(task.title ?? "");
     // Deadline
     const [newDeadline, setNewDeadline] = useState<Date | null>(task.deadline ? new Date(task.deadline) : null);
+    
+    
     // Priority
     const [addPriority, setAddPriority] = useState(false);
-    const [draftPriority, setDraftPriority] = useState<string | null>(task.priority ?? null);
-    const priorityClasses: Record<string, string> = {
-        none: "bg-gray-400 text-white",
-        low: "bg-emerald-400 text-white",
-        medium: "bg-amber-400 text-white",
-        high: "bg-rose-600 text-white"
-    }
+    const [newPriority, setNewPriority] = useState<string | null>(task.priority ?? null);
+   
+    
    
     // Task container outside click event
     const taskContainer = useRef<HTMLDivElement>(null); // task container ref
@@ -53,7 +52,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 title: draftTitle,
-                priority: draftPriority,
+                priority: newPriority,
                 deadline: newDeadline,
                 completed: false
             })
@@ -79,7 +78,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({ 
                 title: draftTitle,
-                priority: newPriority !==undefined ? newPriority : draftPriority,
+                priority: newPriority !==undefined ? newPriority : newPriority,
                 deadline: newDeadline !==undefined ? newDeadline: newDeadline,
                 completed: isCompleted ?? false
             })
@@ -149,64 +148,15 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                     {!task.completed && (
                         <div className="flex">
                             {/* ----- Priority ----- */}
-                            <div className="flex items-center mt-2 gap-2">
-                                {/* Add/Update Priority */}
-                                {addPriority ? (
-                                    <div className="flex gap-2">
-                                        {Object.keys(priorityClasses).map(priority => (
-                                            <div key={priority} className="relative group">
-                                                {/* Orb */}
-                                                <div
-                                                    className={`h-3 w-3 rounded-full cursor-pointer hover:scale-110 transition-transform ${priorityClasses[priority]}`}
-                                                    onClick={() => {
-                                                        const value = priority === "none" ? null : priority 
-                                                        if (!isNew) {
-                                                            handleUpdate({ newPriority: value });
-                                                        }
-                                                        setDraftPriority(value);
-                                                        setAddPriority(false);
-                                                    }}
-                                                />
-                                                {/* Tooltip */}
-                                                <div
-                                                    className="capitalize absolute left-1/2 -translate-x-1/2 opacity-0 mt-2 py-1 px-2 
-                                                        group-hover:opacity-100 transition-opacity bg-gray-800 text-white text-xs rounded"
-                                                >
-                                                    {priority === "none" ? "None" : priority}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    // Priority Text W/ Orb
-                                    <div className="flex items-center gap-1 cursor-pointer" onClick={() => setAddPriority(true)}>
-                                        <div className="relative group">
-                                            {/* Priority orb */}
-                                            <div
-                                                className={`h-3 w-3 rounded-full ${
-                                                    priorityClasses[draftPriority ?? task.priority ?? "none"]
-                                                }`}  
-                                            />
-                                            {/* No Priority tooltip */}
-                                            {(!draftPriority && !task.priority) && (
-                                                <div
-                                                    className="capitalize absolute left-1/2 -translate-x-1/2 opacity-0 mt-2 py-1 px-2 
-                                                        group-hover:opacity-100 transition-opacity bg-gray-800 text-white text-xs rounded"
-                                                >
-                                                    Priority
-                                                </div>
-                                            )}
-                                        </div>
-                                        {/* Priority text */}
-                                        {(isNew || (draftPriority ?? task.priority)) && (
-                                            <span className="text-xs font-semibold capitalize text-gray-400">
-                                                {(draftPriority ?? task.priority ?? (isNew ? "Priority" : "")) && 
-                                                `${draftPriority ?? task.priority ?? ""} priority`}
-                                            </span>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
+                            <TaskPriority 
+                                task={task}
+                                isNew={isNew}
+                                addPriority={addPriority}
+                                setAddPriority={setAddPriority}
+                                newPriority={newPriority}
+                                setNewPriority={setNewPriority}
+                                handleUpdate={handleUpdate}
+                            />
                                 
                             {/* ----- Time ----- */}
                             <TaskDeadline

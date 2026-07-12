@@ -20,13 +20,10 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
     const [isEditing, setIsEditing] = useState(isNew || false);
     const [draftTitle, setDraftTitle] = useState(task.title ?? "");
     // Deadline
-    const [newDeadline, setNewDeadline] = useState<Date | null>(task.deadline ? new Date(task.deadline) : null);
-    
-    
+    const [newDeadline, setNewDeadline] = useState<Date | null>(task.deadline ?? null);
     // Priority
     const [addPriority, setAddPriority] = useState(false);
     const [newPriority, setNewPriority] = useState<string | null>(task.priority ?? null);
-   
     
    
     // Task container outside click event
@@ -63,27 +60,24 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
     }
 
     /* ----- Update task ----- */
-    async function handleUpdate({
-        newPriority,
-        newDeadline,
-        isCompleted
-    }: {
+    async function handleUpdate(update: {
+        newTitle?: string;
         newPriority?: string | null;
         newDeadline?: Date | null;
-        isCompleted?: boolean;
+        isCompleted?: boolean;       
     } = {}) {
-        if (!draftTitle.trim()) return;
+        // Only send fields that were provided in the function signature
+        const body: any = {};
+        if ("newTitle" in update && update.newTitle?.trim()) {body.title = update.newTitle.trim();}
+        if ("newPriority" in update) {body.priority = update.newPriority;}
+        if ("newDeadline" in update) {body.deadline = update.newDeadline;}
+        if ("isCompleted" in update) {body.completed = update.isCompleted;}
+        // Fetch API
         const res = await fetch(`/api/tasks/${task._id}`, {
             method: "PATCH",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ 
-                title: draftTitle,
-                priority: newPriority !==undefined ? newPriority : newPriority,
-                deadline: newDeadline !==undefined ? newDeadline: newDeadline,
-                completed: isCompleted ?? false
-            })
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
         });
-        if (!res.ok) console.error("Failed to update task");
         router.refresh(); // Refresh task list after saving
         setIsEditing(false);
     }
@@ -125,17 +119,17 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                         onChange={(e) => setDraftTitle(e.target.value)}
                         onKeyDown={(e) => {
                             if (e.key === "Enter") {
-                                isNew ? handleCreate() : handleUpdate();
+                                isNew ? handleCreate() : handleUpdate({ newTitle: draftTitle });
                             }
                         }}
                         className="
                             text-2xl leading-6 text-gray-700
-                            border-b-2 border-gray-300 my-1
+                            border-b-2 border-gray-300
                             focus:outline-none transition-colors duration-300"
                     />
                     ) : (
                     <span
-                        className={`text-2xl my-1 leading-6 text-slate-700 cursor-pointer pb-1 inline-block overflow-hidden ${ task.completed ? "line-through" : ""}`}
+                        className={`text-2xl leading-6 text-slate-700 cursor-pointer pb-1 inline-block overflow-hidden ${ task.completed ? "line-through" : ""}`}
                         onClick={() => {
                             if (!task.completed) setIsEditing(true);
                         }}
@@ -146,7 +140,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
 
                     {/* ----- Task Metadata ----- */}
                     {!task.completed && (
-                        <div className="flex">
+                        <div className="flex mt-1">
                             {/* ----- Priority ----- */}
                             <TaskPriority 
                                 task={task}
@@ -157,7 +151,6 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                                 setNewPriority={setNewPriority}
                                 handleUpdate={handleUpdate}
                             />
-                                
                             {/* ----- Time ----- */}
                             <TaskDeadline
                                 task={task}
@@ -168,15 +161,14 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                             />
                     </div>
                     )}
-
                 </div>
             </div>
-            {/* ----- Delete Task ----- */}
+            {/* ----- Add / Delete Task ----- */}
             <div className="flex items-baseline ml-4">
                 {isNew || isEditing ? (
                     <CheckIcon 
                         className="h-5 w-5 text-green-500 hover:scale-110 hover:opacity-80"
-                        onClick={() => isNew ? handleCreate() : handleUpdate() }
+                        onClick={() => isNew ? handleCreate() : handleUpdate({newTitle: draftTitle}) }
                     />
                 ) : (
                     <TrashIcon 

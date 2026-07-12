@@ -23,7 +23,7 @@ const DeadlineInput = React.forwardRef<HTMLSpanElement, DeadlineInputProps>(
       .replace("pm", "PM");
     };
     // Deadline text
-    const text = !!deadline ? formatDeadline(deadline) : isNew ? "Deadline" : "";
+    const text = !!deadline ? formatDeadline(new Date(deadline)) : isNew ? "Deadline" : "";
     return (
       <span
         ref={ref}

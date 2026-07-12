@@ -12,12 +12,19 @@ export async function PATCH(req: Request, context: RouteContext ) {
     const { id } = await context.params;
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
-    const { title, priority, deadline, completed } = await req.json();
-    const result = await db.collection("tasks").updateOne(
+    // Only update sent attributes - prevents null entries
+    const data = await req.json();
+    const update: any = {};
+    if ("title" in data) update.title = data.title;
+    if ("priority" in data) update.priority = data.priority;
+    if ("deadline" in data) update.deadline = data.deadline;
+    if ("completed" in data) update.completed = data.completed;
+
+    await db.collection("tasks").updateOne(
         { _id: new ObjectId(id) },
-        { $set: { title, priority, deadline, completed } }
+        { $set: update }
     );
-  return Response.json({ ok: true });
+    return Response.json({ ok: true });
 }
 
 // Delete task

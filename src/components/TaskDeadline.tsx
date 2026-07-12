@@ -23,7 +23,7 @@ export default function TaskDeadline({task, isNew, newDeadline, setNewDeadline, 
     }
  
     return (
-        <div className="flex items-center mt-2 ml-4 gap-1">
+        <div className="flex items-center gap-1">
             <div className="relative group">
                 {/* ----- Clock ----- */}
                 <ClockIcon
@@ -33,14 +33,14 @@ export default function TaskDeadline({task, isNew, newDeadline, setNewDeadline, 
                     }}
                 />
                 {/* No Deadline tooltip */}
-                {isNew || (!newDeadline || !task.deadline) && (
-                    <div
-                        className="capitalize absolute left-1/2 -translate-x-1/2 opacity-0 mt-2 py-1 px-2 
-                                                group-hover:opacity-100 transition-opacity bg-gray-800 text-white text-xs rounded"
-                    >
-                        Deadline
-                    </div>
-                )}
+                <div
+                    className={`capitalize absolute left-1/2 -translate-x-1/2 opacity-0 mt-2 py-1 px-2 
+                                transition-opacity bg-gray-800 text-white text-xs rounded
+                                ${isNew || (!newDeadline && !task.deadline) ? "group-hover:opacity-100" : "opacity-0"}`}
+                >
+                    Deadline
+                </div>
+                
             </div>
             {/* ----- Add/Update Deadline ----- */}
             <div className="flex relative group max-w-max">

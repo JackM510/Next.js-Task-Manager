@@ -8,10 +8,9 @@ export default async function Home() {
   });
   const tasks = await res.json(); // Convert HTTP response into JSON
 
-
   return (
     <div className="flex flex-col w-full lg:w-3/4 mx-auto bg-white font-sans border border-gray-300">
-      < TaskList
+      <TaskList
         tasks={tasks}
       />
     </div>

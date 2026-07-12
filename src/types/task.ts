@@ -1,7 +1,7 @@
 export type TaskType = {  
     _id: string;
     title?: string;    
-    priority?: "low" | "medium" | "high";
-    deadline?: Date;
+    priority?: null | "low" | "medium" | "high";
+    deadline?: null | Date;
     completed: boolean;
 }

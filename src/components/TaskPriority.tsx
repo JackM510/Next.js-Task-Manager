@@ -1,4 +1,5 @@
 import { TaskType } from "../types/task"
+import { FaCircle } from "react-icons/fa";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 type TaskPriorityProps = {
@@ -14,22 +15,22 @@ type TaskPriorityProps = {
 export default function TaskPriority({ task, isNew, addPriority, setAddPriority, newPriority, setNewPriority, handleUpdate }: TaskPriorityProps) {
     // Priority colour/text classes
     const priorityClasses: Record<string, string> = {
-        none: "bg-gray-400 text-white",
-        low: "bg-emerald-400 text-white",
-        medium: "bg-amber-400 text-white",
-        high: "bg-rose-600 text-white"
+        none: "text-gray-400",
+        low: "text-emerald-400",
+        medium: "text-amber-400",
+        high: "text-rose-600"
     }
     const orbClass = priorityClasses[newPriority ?? task.priority ?? "none"];
 
     return (
-        <div className={`flex items-center cursor-pointer ${isNew || addPriority || task.priority ? "mr-3" : "mr-1"}`}>
+        <div className={`flex items-center cursor-pointer ${ addPriority ?? newPriority ?? task.priority ? "w-[100px]" : ""} } ${isNew || addPriority || task.priority ? "mr-3" : "mr-1"}`}>
             {/* ----- Update Priority ----- */}
             {addPriority ? (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-[100px]">
                     {Object.keys(priorityClasses).filter(priority => priority !=="none").map(priority => (
                         <div key={priority} className="relative group">
                             {/* ----- Orb ----- */}
-                            <div
+                            <FaCircle
                                 className={`h-3 w-3 rounded-full cursor-pointer hover:scale-110 transition-transform ${priorityClasses[priority]}`}
                                 onClick={() => {
                                     if (!isNew) {
@@ -52,9 +53,9 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
             ) : (
                 // Priority Text W/ Orb
                 <div className="flex items-center">
-                    <div className="flex items-center relative group mr-1">
+                    <div className="relative group mr-1">
                         {/* ----- Orb ----- */}
-                        <div
+                        <FaCircle
                             className={`h-3 w-3 rounded-full ${orbClass}`}
                             onClick={() => setAddPriority(true)}
                         />
@@ -62,7 +63,7 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
                         <div
                             className={`capitalize pointer-events-none absolute left-1/2 -translate-x-1/2 opacity-0 mt-2 py-1 px-2 
                                 transition-opacity bg-gray-800 text-white text-xs rounded
-                                ${!newPriority && !task.priority ? "group-hover:opacity-100" : "opacity-0"}`}
+                                ${!newPriority && (task.priority ==null) ? "group-hover:opacity-100" : "opacity-0"}`}
                         >
                             Priority
                         </div>
@@ -72,7 +73,7 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
                         {/* ----- Text ----- */}
                         {(isNew || (newPriority ?? task.priority)) && (
                             <span 
-                                className="text-xs font-semibold capitalize text-gray-400"
+                                className="text-xs font-semibold capitalize text-gray-400 leading-tight"
                                 onClick={() => setAddPriority(true)}
                             >
                                 {(newPriority ?? task.priority ?? (isNew ? "Priority" : "")) &&
@@ -85,7 +86,6 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
                                 onClick={() => {
                                     setNewPriority(null);
                                     setAddPriority(false);
-                                    
                                     if (!isNew) handleUpdate({ newPriority: null });
                                 }}
                             />

@@ -80,5 +80,5 @@ export default function TaskDeadline({task, isNew, newDeadline, setNewDeadline, 
                 )}
             </div>
         </div>
-    )
+    );
 }

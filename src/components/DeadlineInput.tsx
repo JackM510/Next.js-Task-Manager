@@ -28,7 +28,7 @@ const DeadlineInput = React.forwardRef<HTMLSpanElement, DeadlineInputProps>(
       <span
         ref={ref}
         onClick={onClick}
-        className={`text-xs font-semibold cursor-pointer select-none ${isOverdue(deadline ?? null) ? "text-red-500" : "text-gray-400"}`}
+        className={`text-xs font-semibold cursor-pointer select-none leading-tight ${isOverdue(deadline ?? null) ? "text-red-500" : "text-gray-400"}`}
       >
         {text}
       </span>

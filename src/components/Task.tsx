@@ -46,7 +46,9 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                 title: newTitle,
                 priority: newPriority,
                 deadline: newDeadline,
-                completed: false
+                completed: false,
+                createdAt: new Date(),
+                finishedAt: null
             })
         });
         if (!res.ok) console.error("Failed to create task");
@@ -60,6 +62,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
         newPriority?: string | null;
         newDeadline?: Date | null;
         isCompleted?: boolean;
+        finishedAt?: Date | null;
     } = {}) {
         // Only send fields that were provided in the function signature
         const body: any = {};
@@ -67,6 +70,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
         if ("newPriority" in update) { body.priority = update.newPriority; }
         if ("newDeadline" in update) { body.deadline = update.newDeadline; }
         if ("isCompleted" in update) { body.completed = update.isCompleted; }
+        if ("finishedAt" in update) { body.finishedAt = update.finishedAt; }
         // Fetch API
         const res = await fetch(`/api/tasks/${task._id}`, {
             method: "PATCH",
@@ -100,7 +104,10 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                 className="mr-4 accent-blue-500"
                 checked={task.completed}
                 onChange={() => {
-                    handleUpdate({ isCompleted: !task.completed });
+                    handleUpdate({
+                        isCompleted: !task.completed,
+                        finishedAt: !task.completed ? new Date() : null
+                    });
                 }}
             />
             <div className="flex flex-col w-full min-w-0">

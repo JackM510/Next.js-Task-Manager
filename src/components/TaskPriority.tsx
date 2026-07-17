@@ -23,27 +23,24 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
     const orbClass = priorityClasses[newPriority ?? task.priority ?? "none"];
 
     return (
-        <div className={`flex items-center cursor-pointer ${ addPriority ?? newPriority ?? task.priority ? "w-[100px]" : ""} } ${isNew || addPriority || task.priority ? "mr-3" : "mr-1"}`}>
+        <div className={`flex items-center cursor-pointer ${ addPriority || newPriority || task.priority ? "min-w-[60px] mr-3" : "mr-1"}`}>
             {/* ----- Update Priority ----- */}
             {addPriority ? (
-                <div className="flex items-center gap-2 w-[100px]">
+                <div className="flex items-center gap-1.5">
                     {Object.keys(priorityClasses).filter(priority => priority !=="none").map(priority => (
                         <div key={priority} className="relative group">
                             {/* ----- Orb ----- */}
                             <FaCircle
                                 className={`h-3 w-3 rounded-full cursor-pointer hover:scale-110 transition-transform ${priorityClasses[priority]}`}
                                 onClick={() => {
-                                    if (!isNew) {
-                                        handleUpdate({ newPriority: priority });
-                                    }
+                                    if (!isNew) { handleUpdate({ newPriority: priority }); }
                                     setNewPriority(priority);
                                     setAddPriority(false);
                                 }}
                             />
                             {/* ----- Tooltip ----- */}
-                            <div
-                                className="capitalize absolute left-1/2 -translate-x-1/2 opacity-0 mt-2 py-1 px-2 
-                                    group-hover:opacity-100 transition-opacity bg-gray-800 text-white text-xs rounded"
+                            <div className="capitalize absolute left-1/2 -translate-x-1/2 opacity-0 mt-2 py-1 px-2 
+                                group-hover:opacity-100 transition-opacity bg-gray-800 text-white text-xs rounded"
                             >
                                 {priority}
                             </div>
@@ -69,28 +66,28 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
                         </div>
                     </div> 
                     
-                    <div className="flex relative group">
-                        {/* ----- Text ----- */}
-                        {(isNew || (newPriority ?? task.priority)) && (
+                    {(isNew || (newPriority ?? task.priority)) && (
+                        <div className="flex relative group">
+                            {/* ----- Text ----- */}
                             <span 
-                                className="text-xs font-semibold capitalize text-gray-400 leading-tight"
+                                className="text-xs capitalize text-gray-400 leading-tight"
                                 onClick={() => setAddPriority(true)}
                             >
-                                {(newPriority ?? task.priority ?? (isNew ? "Priority" : "")) &&
-                                    `${newPriority ?? task.priority ?? ""} priority`}
+                                {newPriority ?? task.priority ?? (isNew ? "Priority" : "")}
                             </span>
-                        )}
-                        {(newPriority ?? task.priority) && (
+                            
                             <XMarkIcon
-                                className="text-gray-500 h-3 w-3 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                                className={`text-gray-500 h-3 w-3 cursor-pointer opacity-0 transition-opacity
+                                        ${newPriority ?? task.priority ? "group-hover:opacity-100" : ""}`}
                                 onClick={() => {
                                     setNewPriority(null);
                                     setAddPriority(false);
                                     if (!isNew) handleUpdate({ newPriority: null });
                                 }}
                             />
-                        )}
-                    </div>
+                            
+                        </div>
+                    )}
                 </div>
             )}
         </div>

@@ -19,6 +19,7 @@ export async function PATCH(req: Request, context: RouteContext ) {
     if ("priority" in data) update.priority = data.priority;
     if ("deadline" in data) update.deadline = data.deadline;
     if ("completed" in data) update.completed = data.completed;
+    if ("finishedAt" in data) update.finishedAt = data.finishedAt;
 
     await db.collection("tasks").updateOne(
         { _id: new ObjectId(id) },

@@ -4,4 +4,6 @@ export type TaskType = {
     priority?: null | "low" | "medium" | "high";
     deadline?: null | Date;
     completed: boolean;
+    createdAt: Date;
+    finishedAt?: Date | null;
 }

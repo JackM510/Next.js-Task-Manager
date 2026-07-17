@@ -39,6 +39,7 @@ export default function TaskList({ tasks }: taskListProps ) {
                         task={{
                             _id: "new-task",
                             completed: false,
+                            createdAt: new Date()
                         }}
                         isNew={true}
                         onFinishAdd={() => setIsAdding(false)}

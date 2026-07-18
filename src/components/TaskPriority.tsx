@@ -23,7 +23,7 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
     const orbClass = priorityClasses[newPriority ?? task.priority ?? "none"];
 
     return (
-        <div className={`flex items-center cursor-pointer ${ addPriority || newPriority || task.priority ? "min-w-[60px] mr-3" : "mr-1"}`}>
+        <div className={`flex items-center cursor-pointer ${ addPriority || newPriority || task.priority ? "min-w-[72px] mr-3" : "mr-1"}`}>
             {/* ----- Update Priority ----- */}
             {addPriority ? (
                 <div className="flex items-center gap-1.5">

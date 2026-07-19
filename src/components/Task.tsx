@@ -40,7 +40,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
     /* ----- Create task ----- */
     async function handleCreate() {
         if (!newTitle.trim()) return;
-        const res = await fetch("/api", {
+        const res = await fetch("/api/tasks", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

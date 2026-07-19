@@ -113,6 +113,8 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                         newPriority: null,
                         newDeadline: null
                     });
+                    if (task.priority!) setNewPriority(null);
+                    if (task.deadline!) setNewDeadline(null);
                 }}
             />
             <div className="flex flex-col w-full min-w-0">

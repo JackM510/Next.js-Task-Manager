@@ -37,29 +37,21 @@ export default function TaskList({ tasks }: taskListProps ) {
         });
     }
 
-    // Sort by deadline date
+    // Sort by task deadline date
     function sortByDeadline(tasks: TaskType[]) {
         return [...tasks].sort((task1, task2) => {
             // 1. Determine which tasks are active/completed
             const completionOrder = checkTaskCompleted(task1, task2);
             if (completionOrder !== 0) return completionOrder;
             // 2. If both tasks are active, sort by deadline
-            if (!task1.completed && !task2.completed) {
-                if (!task1.deadline && !task2.deadline) return 0; // If Both tasks have no deadline - their position is equal
-                if (!task1.deadline) return 1;  // If task1 has no deadline - position under task2
-                if (!task2.deadline) return -1; // If task2 has no deadline - position under task1
-                // If both tasks have a deadline - convert deadlines to timestamps
-                const d1 = new Date(task1.deadline).getTime();
-                const d2 = new Date(task2.deadline).getTime();
-                // The earliest deadline (lowest number) comes first
-                return d1 - d2;
-            }
+            const deadlineOrder = checkTaskDeadline(task1, task2);
+            if (deadlineOrder !==undefined) return deadlineOrder;
             // 3. If both tasks are completed sort by finishedAt
             return sortByFinishedAt(task1, task2);
         });
     }
 
-    // Sort by task priority
+    // Sort by task priority - also then sorts by deadline if defined
     function sortByPriority(tasks: TaskType[]) {
         // Rank the order of each priority string
         const priorityRank = {
@@ -77,10 +69,13 @@ export default function TaskList({ tasks }: taskListProps ) {
                 // Convert priority into a numeric rank (high → low)
                 const p1 = priorityRank[task1.priority ?? "none"];
                 const p2 = priorityRank[task2.priority ?? "none"];
-                // The lowest number has the highest priority and is positioned first
-                return p1 - p2;
+                const priorityOrder = p1 - p2;
+                if (priorityOrder !== 0) return priorityOrder;
+                // 3. If priority is equal - sort by deadline
+                const deadlineOrder = checkTaskDeadline(task1, task2);
+                if (deadlineOrder !== undefined) return deadlineOrder;
             }
-            // 3. If both tasks are completed sort by finishedAt
+            // 4. If both tasks are completed sort by finishedAt
             return sortByFinishedAt(task1, task2);
         });
     }
@@ -102,6 +97,20 @@ export default function TaskList({ tasks }: taskListProps ) {
         const t1 = new Date(task1.finishedAt!).getTime();
         const t2 = new Date(task2.finishedAt!).getTime();
         return t1 - t2;
+    }
+
+    // Compare task deadlines to determine which is positioned first
+    function checkTaskDeadline(task1: TaskType, task2: TaskType) {
+        if (!task1.completed && !task2.completed) {
+            if (!task1.deadline && !task2.deadline) return 0; // If Both tasks have no deadline - their position is equal
+            if (!task1.deadline) return 1;  // If task1 has no deadline - position under task2
+            if (!task2.deadline) return -1; // If task2 has no deadline - position under task1
+            // If both tasks have a deadline - convert deadlines to timestamps
+            const d1 = new Date(task1.deadline).getTime();
+            const d2 = new Date(task2.deadline).getTime();
+            // The earliest deadline (lowest number) comes first
+            return d1 - d2;
+        }
     }
 
     return (

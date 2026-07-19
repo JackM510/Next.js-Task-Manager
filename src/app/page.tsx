@@ -2,7 +2,7 @@ import TaskList from "../components/TaskList"
 
 export default async function Home() {
   // Send a request to route.ts API to get tasks from MongoDB
-  const res = await fetch("http://localhost:3000/api", {
+  const res = await fetch("http://localhost:3000/api/tasks", {
     cache: "no-store"
   });
   const tasks = await res.json(); // Convert HTTP response into JSON

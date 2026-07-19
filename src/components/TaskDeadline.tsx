@@ -64,8 +64,10 @@ export default function TaskDeadline({task, isNew, newDeadline, setNewDeadline, 
                     showTimeSelect
                     dateFormat="dd/MM/yyyy HH:mm aa"
                     minDate={new Date()}
+                    popperPlacement="bottom-start"
                     popperClassName="z-50"
                     portalId="root-portal"
+                    withPortal
                     onKeyDown={(e) => e.preventDefault()}
                     onFocus={(e) => e.target.blur()}
                 />

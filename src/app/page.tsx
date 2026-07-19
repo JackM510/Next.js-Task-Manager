@@ -1,4 +1,3 @@
-
 import TaskList from "../components/TaskList"
 
 export default async function Home() {
@@ -9,7 +8,9 @@ export default async function Home() {
   const tasks = await res.json(); // Convert HTTP response into JSON
 
   return (
-    <div className="flex flex-col w-full lg:w-3/4 mx-auto bg-white font-sans border border-gray-300">
+
+<div className="h-auto w-full md:w-3/4 mx-auto bg-white font-sans border border-gray-300 px-4 sm:px-6 md:px-8">
+
       <TaskList
         tasks={tasks}
       />

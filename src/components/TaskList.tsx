@@ -105,9 +105,9 @@ export default function TaskList({ tasks }: taskListProps ) {
     }
 
     return (
-        <div className="h-full lg:w-1/2 mx-auto py-12">
+        <div className="min-h-screen sm:w-3/4 lg:w-3/5 xl:w-1/2 mx-auto py-12">
             {/* ----- Task Manager header ----- */}
-            <div className="h-full flex items-baseline justify-between border-b-3 border-gray-300 mb-4">
+            <div className="flex items-baseline justify-between border-b-3 border-gray-300 mb-4">
                 <h1 className="text-4xl font-bold text-black pb-4">
                     Task Manager
                 </h1>

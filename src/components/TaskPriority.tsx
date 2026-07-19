@@ -31,7 +31,7 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
                         <div key={priority} className="relative group">
                             {/* ----- Orb ----- */}
                             <FaCircle
-                                className={`h-3 w-3 rounded-full cursor-pointer hover:scale-110 transition-transform ${priorityClasses[priority]}`}
+                                className={`h-3.5 w-3.5 rounded-full cursor-pointer hover:scale-110 transition-transform ${priorityClasses[priority]}`}
                                 onClick={() => {
                                     if (!isNew) { handleUpdate({ newPriority: priority }); }
                                     setNewPriority(priority);
@@ -53,7 +53,7 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
                     <div className="relative group mr-1">
                         {/* ----- Orb ----- */}
                         <FaCircle
-                            className={`h-3 w-3 rounded-full ${orbClass}`}
+                            className={`h-3.5 w-3.5 rounded-full ${orbClass}`}
                             onClick={() => setAddPriority(true)}
                         />
                         {/* ----- Tooltip -----*/}

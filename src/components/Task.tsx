@@ -5,6 +5,7 @@ import { TaskType } from "../types/task"
 import TaskTitle from "./TaskTitle";
 import TaskPriority from "./TaskPriority"
 import TaskDeadline from "./TaskDeadline"
+import { motion } from "framer-motion";
 
 type TaskProps = {
     task: TaskType;
@@ -91,22 +92,26 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
     }
 
     return (
-        <div
+        <motion.div
             ref={taskContainer}
-            className={`flex flex-1 items-baseline min-w-0 p-4 border-2 rounded mb-3 bg-gray-100
-                transform transition-transform duration-250 hover:-translate-y-0.5 
-                ${task.completed ? "opacity-75" : ""}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: task.completed ? 0.75 : 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="flex flex-1 items-baseline min-w-0 p-4 border-2 rounded mb-3 bg-gray-100 transition-transform duration-250 hover:-translate-y-0.5"
         >
-
             {/* ----- Checkbox ----- */}
             <input
                 type="checkbox"
                 className="mr-4 accent-blue-500"
                 checked={task.completed}
                 onChange={() => {
+                    const isTaskCompleted = !task.completed;
                     handleUpdate({
-                        isCompleted: !task.completed,
-                        finishedAt: !task.completed ? new Date() : null
+                        isCompleted: isTaskCompleted,
+                        finishedAt: isTaskCompleted ? new Date() : null,
+                        newPriority: null,
+                        newDeadline: null
                     });
                 }}
             />
@@ -125,7 +130,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                 />
                 {/* ----- Metadata ----- */}
                 {!task.completed && (
-                    <div className="flex mt-2">
+                    <div className="flex flex-col gap-y-2 sm:flex-row mt-3">
                         {/* ----- Priority ----- */}
                         <TaskPriority
                             task={task}
@@ -147,7 +152,6 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                     </div>
                 )}
             </div>
-
-        </div>
+        </motion.div>
     );
 }

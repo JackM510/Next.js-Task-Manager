@@ -25,6 +25,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Deadline */
 .react-datepicker-wrapper,
 .react-datepicker__input-container {
   display: flex !important;

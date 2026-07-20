@@ -16,49 +16,48 @@ type TaskDeadlineProps = {
 export default function TaskDeadline({task, isNew, newDeadline, setNewDeadline, handleUpdate}: TaskDeadlineProps) {
     const inputRef = useRef(null);
     const datePickerRef = useRef<DatePicker | null>(null);
-
-     // Check if a deadline is overdue
+    // Check if a deadline is overdue
     const isOverdue = (value: Date | null) => {
-      return !!value && new Date(value) < new Date() ? true : false;
-    }
- 
+        return !!value && value < new Date();
+    };
+
     return (
         <div className="flex items-center gap-1">
             <div className="relative group">
                 {/* ----- Clock ----- */}
                 <ClockIcon
-                    className={`h-4 w-4 text-gray-400 cursor-pointer ${(isOverdue(newDeadline ?? null) || isOverdue(task.deadline ?? null)) ? "text-red-600" : "text-gray-400"}`}
+                    className={`h-4 w-4 cursor-pointer ${(isOverdue(newDeadline ?? null) || isOverdue(task.deadline ?? null)) ? "text-red-600" : "text-gray-400"}`}
                     onClick={() => {
                         datePickerRef.current?.setOpen(true);
                     }}
                 />
-                {/* No Deadline tooltip */}
+                {/* Tooltip */}
                 <div
-                    className={`capitalize absolute left-1/2 -translate-x-1/2 opacity-0 mt-2 py-1 px-2 
-                                transition-opacity bg-gray-800 text-white text-xs rounded
-                                ${isNew || (!newDeadline && !task.deadline) ? "group-hover:opacity-100" : "opacity-0"}`}
+                    className={`absolute left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs capitalize rounded mt-2 py-1 px-2 
+                                transition-opacity opacity-0 ${isNew || (!newDeadline && !task.deadline) ? "group-hover:opacity-100" : ""}`}
                 >
                     Deadline
                 </div>
-                
             </div>
-            {/* ----- Add/Update Deadline ----- */}
-            <div className="flex relative group max-w-max">
+            {/* ----- Add/Update & Clear Deadline ----- */}
+            <div className="flex relative group">
                 <DatePicker
                     ref={datePickerRef}
-                    selected={newDeadline ? new Date(newDeadline) : null}
+                    selected={newDeadline}
                     onChange={(date: Date | null) => {
                         if (!date) return;
-                        const iso = date;
-                        if (!isNew) handleUpdate({ newDeadline: iso });
-                        setNewDeadline(iso);
+                        if (!isNew) handleUpdate({ newDeadline: date });
+                        setNewDeadline(date);
                     }}
                     customInput={
                         <DeadlineInput
                             ref={inputRef}
+                            task={task}
                             isNew={isNew}
                             deadline={newDeadline}
+                            setNewDeadline={setNewDeadline}
                             isOverdue={isOverdue}
+                            handleUpdate={handleUpdate}
                         />
                     }
                     showTimeSelect
@@ -69,17 +68,7 @@ export default function TaskDeadline({task, isNew, newDeadline, setNewDeadline, 
                     portalId="root-portal"
                     withPortal
                     onKeyDown={(e) => e.preventDefault()}
-                    onFocus={(e) => e.target.blur()}
                 />
-                {(newDeadline || task.deadline) && (
-                    <XMarkIcon
-                        className="text-gray-500 h-3 w-3 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => {
-                            setNewDeadline(null);
-                            if (!isNew) handleUpdate({ newDeadline: null });
-                        }}
-                    />
-                )}
             </div>
         </div>
     );

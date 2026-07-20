@@ -13,7 +13,7 @@ type TaskPriorityProps = {
 }
 
 export default function TaskPriority({ task, isNew, addPriority, setAddPriority, newPriority, setNewPriority, handleUpdate }: TaskPriorityProps) {
-    // Priority colour/text classes
+    // Priority colour classes
     const priorityClasses: Record<string, string> = {
         none: "text-gray-400",
         low: "text-emerald-400",
@@ -31,7 +31,7 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
                         <div key={priority} className="relative group">
                             {/* ----- Orb ----- */}
                             <FaCircle
-                                className={`h-3.5 w-3.5 rounded-full cursor-pointer hover:scale-110 transition-transform ${priorityClasses[priority]}`}
+                                className={`h-3.5 w-3.5 rounded-full cursor-pointer transition-transform hover:scale-110 ${priorityClasses[priority]}`}
                                 onClick={() => {
                                     if (!isNew) { handleUpdate({ newPriority: priority }); }
                                     setNewPriority(priority);
@@ -39,8 +39,8 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
                                 }}
                             />
                             {/* ----- Tooltip ----- */}
-                            <div className="capitalize absolute left-1/2 -translate-x-1/2 opacity-0 mt-2 py-1 px-2 
-                                group-hover:opacity-100 transition-opacity bg-gray-800 text-white text-xs rounded"
+                            <div className="absolute left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs capitalize opacity-0 rounded mt-2 py-1 px-2 
+                                group-hover:opacity-100 transition-opacity"
                             >
                                 {priority}
                             </div>
@@ -48,7 +48,7 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
                     ))}
                 </div>
             ) : (
-                // Priority Text W/ Orb
+                // Priority Orb + Text
                 <div className="flex items-center">
                     <div className="relative group mr-1">
                         {/* ----- Orb ----- */}
@@ -58,9 +58,8 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
                         />
                         {/* ----- Tooltip -----*/}
                         <div
-                            className={`capitalize pointer-events-none absolute left-1/2 -translate-x-1/2 opacity-0 mt-2 py-1 px-2 
-                                transition-opacity bg-gray-800 text-white text-xs rounded
-                                ${!newPriority && (task.priority ==null) ? "group-hover:opacity-100" : "opacity-0"}`}
+                            className={`absolute left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs capitalize opacity-0 rounded mt-2 py-1 px-2 
+                                transition-opacity ${!newPriority && (task.priority ==null) ? "group-hover:opacity-100" : "opacity-0"}`}
                         >
                             Priority
                         </div>
@@ -70,14 +69,14 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
                         <div className="flex relative group">
                             {/* ----- Text ----- */}
                             <span 
-                                className="text-xs capitalize text-gray-400 leading-tight"
+                                className="text-xs text-gray-400 capitalize"
                                 onClick={() => setAddPriority(true)}
                             >
                                 {newPriority ?? task.priority ?? (isNew ? "Priority" : "")}
                             </span>
-                            
+                            {/* ----- Clear Priority ----- */}
                             <XMarkIcon
-                                className={`text-gray-500 h-3 w-3 cursor-pointer opacity-0 transition-opacity
+                                className={`h-3 w-3 text-gray-500 cursor-pointer opacity-0 transition-opacity
                                         ${newPriority ?? task.priority ? "group-hover:opacity-100" : ""}`}
                                 onClick={() => {
                                     setNewPriority(null);
@@ -85,7 +84,6 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
                                     if (!isNew) handleUpdate({ newPriority: null });
                                 }}
                             />
-                            
                         </div>
                     )}
                 </div>
@@ -93,4 +91,3 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
         </div>
     );
 }
-

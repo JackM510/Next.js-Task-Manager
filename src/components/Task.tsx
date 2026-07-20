@@ -1,4 +1,4 @@
-"use client"; // Run in the browser
+"use client"; // Run in browser
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { TaskType } from "../types/task"
@@ -10,10 +10,10 @@ import { motion } from "framer-motion";
 type TaskProps = {
     task: TaskType;
     isNew: boolean;
-    onFinishAdd?: () => void;
+    setIsAdding?: (value: boolean) => void;
 }
 
-export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
+export default function Task({ task, isNew, setIsAdding }: TaskProps) {
     const router = useRouter();
     // Title, Deadline, Priority
     const [addTitle, setAddTitle] = useState(isNew || false);
@@ -29,8 +29,8 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
             if ((e.target as HTMLElement).closest(".react-datepicker")) return;
             if (taskContainer.current && !taskContainer.current.contains(e.target as Node)) {
                 setAddTitle(false);
-                onFinishAdd?.();
                 setAddPriority(false);
+                setIsAdding?.(false);
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
@@ -54,7 +54,9 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
         });
         if (!res.ok) console.error("Failed to create task");
         router.refresh(); // Refresh task list
-        onFinishAdd?.();   // Call passed function
+        setIsAdding?.(false);
+        setAddTitle(false);
+        setAddPriority(false);
     }
 
     /* ----- Update task ----- */
@@ -65,7 +67,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
         isCompleted?: boolean;
         finishedAt?: Date | null;
     } = {}) {
-        // Only send fields that were provided in the function signature
+        // Only send fields that were provided
         const body: any = {};
         if ("newTitle" in update && update.newTitle?.trim()) { body.title = update.newTitle.trim(); }
         if ("newPriority" in update) { body.priority = update.newPriority; }
@@ -78,8 +80,10 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body)
         });
+        if (!res.ok) console.error("Failed to update task");
         router.refresh(); // Refresh task list
         setAddTitle(false);
+        setAddPriority(false);
     }
 
     /* ----- Delete task ----- */
@@ -98,7 +102,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
             animate={{ opacity: task.completed ? 0.75 : 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="flex flex-1 items-baseline min-w-0 p-4 border-2 border-gray-200 rounded mb-3 bg-gray-100 transition-transform duration-250 hover:-translate-y-0.5"
+            className="flex flex-1 items-baseline min-w-0 bg-gray-100 border-2 border-gray-200 rounded p-4 mb-3 transition-transform duration-250 hover:-translate-y-0.5"
         >
             {/* ----- Checkbox ----- */}
             <input
@@ -113,8 +117,8 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                         newPriority: null,
                         newDeadline: null
                     });
-                    if (task.priority) setNewPriority(null);
-                    if (task.deadline) setNewDeadline(null);
+                    setNewPriority(null);
+                    setNewDeadline(null);
                 }}
             />
             <div className="flex flex-col w-full min-w-0">

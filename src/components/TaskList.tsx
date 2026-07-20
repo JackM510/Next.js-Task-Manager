@@ -144,7 +144,7 @@ export default function TaskList({ tasks }: taskListProps) {
                             createdAt: new Date()
                         }}
                         isNew={true}
-                        onFinishAdd={() => setIsAdding(false)}
+                        setIsAdding={setIsAdding}
                     />
                 )}
                 {/* All Tasks */}

@@ -5,5 +5,5 @@ export type TaskType = {
     deadline?: null | Date;
     completed: boolean;
     createdAt: Date;
-    finishedAt?: Date | null;
+    finishedAt?: null | Date;
 }

@@ -98,7 +98,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
             animate={{ opacity: task.completed ? 0.75 : 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="flex flex-1 items-baseline min-w-0 p-4 border-2 rounded mb-3 bg-gray-100 transition-transform duration-250 hover:-translate-y-0.5"
+            className="flex flex-1 items-baseline min-w-0 p-4 border-2 border-gray-200 rounded mb-3 bg-gray-100 transition-transform duration-250 hover:-translate-y-0.5"
         >
             {/* ----- Checkbox ----- */}
             <input

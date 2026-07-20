@@ -1,10 +1,8 @@
 // Connection helper
-
 import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI!; // Read MongoDB URI from .env-local
 const options = {};
-
 let client;
 let clientPromise: Promise<MongoClient>;
 
@@ -12,8 +10,7 @@ let clientPromise: Promise<MongoClient>;
 if (!process.env.MONGODB_URI) {
     throw new Error("Please add your Mongo URI to .env.local");
 }
-
-// If in development mode reuse existing connection; prevent new connections on refresh.
+// If in development mode reuse the existing connection - prevents new connections on refresh.
 if (process.env.NODE_ENV === "development") {
     // If no global connection exists
     if (!(global as any)._mongoClientPromise) {

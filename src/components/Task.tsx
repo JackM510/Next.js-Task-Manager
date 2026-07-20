@@ -53,8 +53,8 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
             })
         });
         if (!res.ok) console.error("Failed to create task");
-        router.refresh(); // Refresh task list after saving
-        onFinishAdd?.();   // Call the passed function
+        router.refresh(); // Refresh task list
+        onFinishAdd?.();   // Call passed function
     }
 
     /* ----- Update task ----- */
@@ -78,7 +78,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body)
         });
-        router.refresh(); // Refresh task list after saving
+        router.refresh(); // Refresh task list
         setAddTitle(false);
     }
 
@@ -88,7 +88,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
             method: "DELETE",
         });
         if (!res.ok) console.error("Failed to delete task");
-        router.refresh();
+        router.refresh(); // Refresh task list
     }
 
     return (
@@ -103,7 +103,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
             {/* ----- Checkbox ----- */}
             <input
                 type="checkbox"
-                className="mr-4 accent-blue-500"
+                className="accent-blue-500 mr-4"
                 checked={task.completed}
                 onChange={() => {
                     const isTaskCompleted = !task.completed;
@@ -113,8 +113,8 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                         newPriority: null,
                         newDeadline: null
                     });
-                    if (task.priority!) setNewPriority(null);
-                    if (task.deadline!) setNewDeadline(null);
+                    if (task.priority) setNewPriority(null);
+                    if (task.deadline) setNewDeadline(null);
                 }}
             />
             <div className="flex flex-col w-full min-w-0">
@@ -132,7 +132,7 @@ export default function Task({ task, isNew, onFinishAdd }: TaskProps) {
                 />
                 {/* ----- Metadata ----- */}
                 {!task.completed && (
-                    <div className="flex flex-col gap-y-2 sm:flex-row mt-3">
+                    <div className="flex flex-col sm:flex-row gap-y-2 mt-3">
                         {/* ----- Priority ----- */}
                         <TaskPriority
                             task={task}

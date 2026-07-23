@@ -1,5 +1,5 @@
 # Next.js Task Manager
-A lightweight task manager built with Next.js, TypeScript, Tailwind CSS, and MongoDB. It includes full CRUD operations for tasks, priority levels, and task deadlines via React DatePicker, powered by RESTful API routes.
+A lightweight task manager built with Next.js, TypeScript, Tailwind CSS, and MongoDB. It includes full CRUD operations for tasks, priority levels, and task deadlines via React DatePicker, powered by RESTful API routes. By default the project has no tasks but includes 15 demo tasks which can be seeded to MongoDB using the seed.ts script provided for testing purposes.
 
 ## Demo
 - Follow the Installation instructions below to use Task Manager on your local machine.

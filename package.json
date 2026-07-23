@@ -6,10 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed": "tsc src/lib/seed.ts --outDir seed-dist && node seed-dist/seed.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "dotenv": "^17.4.2",
     "framer-motion": "^12.42.2",
     "mongodb": "^7.3.0",
     "next": "16.2.9",

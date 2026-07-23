@@ -1,9 +1,11 @@
+import "dotenv/config";
 import clientPromise from "./mongodb"
 import { ObjectId } from "mongodb";
 
+
 async function seedTasks() {
     const client = await clientPromise;
-    const db = client.db();
+    const db = client.db(process.env.MONGODB_DB);
     const tasks = db.collection("tasks");
     // Clear any existing data
     await tasks.deleteMany({}); 
@@ -42,7 +44,7 @@ async function seedTasks() {
             priority: "high",
             deadline: setDeadline(9, 0, 15),
             completed: false,
-            createdAt: setPreviousDate(7),
+            createdAt: setPreviousDate(2),
             finishedAt: null
         },
         {
@@ -69,7 +71,7 @@ async function seedTasks() {
             priority: "low",
             deadline: null,
             completed: false,
-            createdAt: setPreviousDate(1),
+            createdAt: setPreviousDate(3),
             finishedAt: null
         },
         {
@@ -78,7 +80,7 @@ async function seedTasks() {
             priority: "high",
             deadline: setDeadline(18, 0, 7),
             completed: false,
-            createdAt: setPreviousDate(14),
+            createdAt: setPreviousDate(5),
             finishedAt: null
         },
         {
@@ -87,16 +89,16 @@ async function seedTasks() {
             priority: "low",
             deadline: null,
             completed: false,
-            createdAt: setPreviousDate(3),
+            createdAt: setPreviousDate(7),
             finishedAt: null
         },
         {
             _id: new ObjectId(),
-            title: "renew car registration",  
+            title: "renew car rego",  
             priority: "high",
             deadline: setDeadline(19, 0, 31),
             completed: false,
-            createdAt: setPreviousDate(31),
+            createdAt: setPreviousDate(2),
             finishedAt: null
         },
         {
@@ -114,7 +116,7 @@ async function seedTasks() {
             priority: "medium",
             deadline: setDeadline(12, 0, -2),
             completed: false,
-            createdAt: setPreviousDate(21),
+            createdAt: setPreviousDate(7),
             finishedAt: null
         },
         {
@@ -123,7 +125,7 @@ async function seedTasks() {
             priority: null,
             deadline: null,
             completed: true,
-            createdAt: setPreviousDate(15),
+            createdAt: setPreviousDate(6),
             finishedAt: setPreviousDate(4)
         },
         {
@@ -141,16 +143,16 @@ async function seedTasks() {
             priority: "high",
             deadline: setDeadline(19, 0, 3),
             completed: false,
-            createdAt: setPreviousDate(14),
+            createdAt: setPreviousDate(7),
             finishedAt: null
         },
         {
             _id: new ObjectId(),
-            title: "renew insurance",  
-            priority: "high",
-            deadline: setDeadline(17, 30, 10),
+            title: "Do washing",  
+            priority: "low",
+            deadline: null,
             completed: false,
-            createdAt: setPreviousDate(56),
+            createdAt: setPreviousDate(2),
             finishedAt: null
         },
         {

@@ -1,7 +1,7 @@
 // Connection helper
 import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGODB_URI!; // Read MongoDB URI from .env-local
+const uri = process.env.MONGODB_URI!; // Read MongoDB URI from .env
 const options = {};
 let client;
 let clientPromise: Promise<MongoClient>;

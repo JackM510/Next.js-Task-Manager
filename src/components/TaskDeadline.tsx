@@ -17,8 +17,10 @@ export default function TaskDeadline({task, isNew, newDeadline, setNewDeadline, 
     const inputRef = useRef(null);
     const datePickerRef = useRef<DatePicker | null>(null);
     // Check if a deadline is overdue
-    const isOverdue = (value: Date | null) => {
-        return !!value && value < new Date();
+    const isOverdue = (value: Date | string | null) => {
+        if (!value) return false;
+        const date = typeof value === "string" ? new Date(value) : value;
+        return date < new Date();
     };
 
     return (

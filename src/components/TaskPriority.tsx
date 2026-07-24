@@ -1,4 +1,5 @@
 import { TaskType } from "../types/task"
+import { useMobileRevealX } from "../hook/useMobileRevealX"
 import { FaCircle } from "react-icons/fa";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
@@ -10,9 +11,12 @@ type TaskPriorityProps = {
     newPriority: string | null;
     setNewPriority: (value: string | null) => void;
     handleUpdate: (args: { newPriority?: string | null }) => void;
+    isTouchDevice: boolean;
 }
 
-export default function TaskPriority({ task, isNew, addPriority, setAddPriority, newPriority, setNewPriority, handleUpdate }: TaskPriorityProps) {
+export default function TaskPriority({ task, isNew, addPriority, setAddPriority, newPriority, setNewPriority, handleUpdate, isTouchDevice }: TaskPriorityProps) {
+    // Track whether X should be shown by touching priority string if on touch device
+    const { showX, setShowX, wrapperRef } = useMobileRevealX();
     // Priority colour classes
     const priorityClasses: Record<string, string> = {
         none: "text-gray-400",
@@ -66,18 +70,29 @@ export default function TaskPriority({ task, isNew, addPriority, setAddPriority,
                     </div> 
                     
                     {(isNew || (newPriority ?? task.priority)) && (
-                        <div className="flex relative group">
+                        <div 
+                            ref={wrapperRef}
+                            className="flex relative group"
+                        >
                             {/* ----- Text ----- */}
                             <span 
                                 className="text-xs text-gray-400 capitalize"
-                                onClick={() => setAddPriority(true)}
+                                onClick={() => {
+                                    if (isTouchDevice) {
+                                        setShowX(true);
+                                        return;
+                                    }
+                                    setAddPriority(true);
+                                }}
                             >
                                 {newPriority ?? task.priority ?? (isNew ? "Priority" : "")}
                             </span>
                             {/* ----- Clear Priority ----- */}
                             <XMarkIcon
                                 className={`h-3 w-3 text-gray-500 cursor-pointer opacity-0 transition-opacity
-                                        ${newPriority ?? task.priority ? "group-hover:opacity-100" : ""}`}
+                                        ${newPriority ?? task.priority
+                                            ? (isTouchDevice ? (showX ? "opacity-100" : "opacity-0")
+                                            : "opacity-0 group-hover:opacity-100") : "opacity-0"}`}
                                 onClick={() => {
                                     setNewPriority(null);
                                     setAddPriority(false);

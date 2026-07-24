@@ -11,9 +11,10 @@ type TaskDeadlineProps = {
     newDeadline: Date | null;
     setNewDeadline: (value: Date | null) => void;
     handleUpdate: (args: {newDeadline?: Date | null}) => void;
+    isTouchDevice: boolean;
 }
 
-export default function TaskDeadline({task, isNew, newDeadline, setNewDeadline, handleUpdate}: TaskDeadlineProps) {
+export default function TaskDeadline({task, isNew, newDeadline, setNewDeadline, handleUpdate, isTouchDevice}: TaskDeadlineProps) {
     const inputRef = useRef(null);
     const datePickerRef = useRef<DatePicker | null>(null);
     // Check if a deadline is overdue
@@ -42,7 +43,7 @@ export default function TaskDeadline({task, isNew, newDeadline, setNewDeadline, 
                 </div>
             </div>
             {/* ----- Add/Update & Clear Deadline ----- */}
-            <div className="flex relative group">
+            <div className="flex">
                 <DatePicker
                     ref={datePickerRef}
                     selected={newDeadline}
@@ -54,12 +55,12 @@ export default function TaskDeadline({task, isNew, newDeadline, setNewDeadline, 
                     customInput={
                         <DeadlineInput
                             ref={inputRef}
-                            task={task}
                             isNew={isNew}
                             deadline={newDeadline}
                             setNewDeadline={setNewDeadline}
                             isOverdue={isOverdue}
                             handleUpdate={handleUpdate}
+                            isTouchDevice={isTouchDevice}
                         />
                     }
                     showTimeSelect

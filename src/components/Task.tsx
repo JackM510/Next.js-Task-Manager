@@ -21,6 +21,19 @@ export default function Task({ task, isNew, setIsAdding }: TaskProps) {
     const [newDeadline, setNewDeadline] = useState<Date | null>(task.deadline ?? null);
     const [addPriority, setAddPriority] = useState(false);
     const [newPriority, setNewPriority] = useState<string | null>(task.priority ?? null);
+    
+    // Detect if touch device or desktop
+    const [isTouchDevice, setIsTouchDevice] = useState(
+        typeof window !== "undefined" ? window.innerWidth <= 992 : false
+    );
+    // If screen resized - update isTouchDevice
+    useEffect(() => {
+        const handleResize = () => {
+            setIsTouchDevice(window.innerWidth <= 992);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     // Task container outside click
     const taskContainer = useRef<HTMLDivElement>(null);
@@ -146,6 +159,7 @@ export default function Task({ task, isNew, setIsAdding }: TaskProps) {
                             newPriority={newPriority}
                             setNewPriority={setNewPriority}
                             handleUpdate={handleUpdate}
+                            isTouchDevice={isTouchDevice}
                         />
                         {/* ----- Deadline ----- */}
                         <TaskDeadline
@@ -154,6 +168,7 @@ export default function Task({ task, isNew, setIsAdding }: TaskProps) {
                             newDeadline={newDeadline}
                             setNewDeadline={setNewDeadline}
                             handleUpdate={handleUpdate}
+                            isTouchDevice={isTouchDevice}
                         />
                     </div>
                 )}

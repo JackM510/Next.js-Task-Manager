@@ -52,7 +52,8 @@ const DeadlineInput = React.forwardRef<HTMLSpanElement, DeadlineInputProps>(
         </span>
         {(deadline) && (
           <XMarkIcon
-              className={`h-3 w-3 text-gray-500 cursor-pointer opacity-0 transition-opacity ${isTouchDevice ? showX ? "opacity-100" : "opacity-0" : "group-hover:opacity-100"}`}
+              className={`h-3 w-3 text-gray-500 cursor-pointer opacity-0 transition-opacity 
+                ${isTouchDevice ? showX ? "opacity-100" : "opacity-0" : "group-hover:opacity-100"}`}
               onClick={(e) => {
                   e.stopPropagation();
                   setNewDeadline(null);

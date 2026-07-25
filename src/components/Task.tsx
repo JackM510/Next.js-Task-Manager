@@ -23,9 +23,7 @@ export default function Task({ task, isNew, setIsAdding }: TaskProps) {
     const [newPriority, setNewPriority] = useState<string | null>(task.priority ?? null);
     
     // Detect if touch device or desktop
-    const [isTouchDevice, setIsTouchDevice] = useState(
-        typeof window !== "undefined" ? window.innerWidth <= 992 : false
-    );
+    const [isTouchDevice, setIsTouchDevice] = useState(false);
     // If screen resized - update isTouchDevice
     useEffect(() => {
         const handleResize = () => {

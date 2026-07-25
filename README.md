@@ -58,7 +58,7 @@ A lightweight task manager built with Next.js, TypeScript, Tailwind CSS, and Mon
     - ```MONGODB_DB="taskmanager"```
 5. **Start Development Server** — Run ```npm run dev``` to start the Next.js development server.
 6. **Open the App** — Visit http://localhost:3000 in your browser.
-7. **Import Seed Date (Optional)** — Run ```npm run seed``` to import default data for testing.
+7. **Import Seed Data (Optional)** — Run ```npm run seed``` to import default data for testing.
 
 ## Usage
 - **View Task List** — View all tasks in a single scrollable list.

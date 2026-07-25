@@ -2,20 +2,29 @@
 A lightweight task manager built with Next.js, TypeScript, Tailwind CSS, and MongoDB. It includes full CRUD operations for tasks, priority levels, and task deadlines via React DatePicker, powered by RESTful API routes. By default the project has no tasks but includes 15 demo tasks which can be seeded to MongoDB using the seed.ts script provided for testing purposes.
 
 ## Demo
-- Follow the Installation instructions below to use Task Manager on your local machine.
-- You can optionally pre-load Task data by using the provided seed script to import tasks into MongoDB.
+### Screenshots (Desktop)
+<div style="display: flex; flex-wrap: wrap; gap: 16px;">
+  <img src="demo/desktop/desktop1-creation.png" width="100%" />
+  <img src="demo/desktop/desktop2-deadline.png" width="100%" />
+  <img src="demo/desktop/desktop3-priority.png" width="100%" />
+</div>
 
+### Video (Desktop)
+<div style="display: flex;">
+  <img src="demo/desktop/desktop-demo.gif" width="100%" />
+</div>
 
+### Screenshots (Mobile)
+<div style="display: flex; flex-wrap: wrap; gap: 16px;">
+  <img src="demo/mobile/mobile1-creation.png" width="auto" />
+  <img src="demo/mobile/mobile2-deadline.png" width="auto" />
+  <img src="demo/mobile/mobile3-priority.png" width="auto" />
+</div>
 
-
-### Desktop Screenshots
-
-### Desktop Video
-
-### Mobile Screenshots
-
-### Mobile Video
-
+### Video (Mobile)
+<div style="display: flex;">
+  <img src="demo/mobile/mobile-demo.gif" width="auto" />
+</div>
 
 
 ## Features
